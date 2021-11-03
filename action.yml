@@ -1,0 +1,66 @@
+name: 'Teams Notification'
+description: 'Notify a given channel in MS Teams that a deployment was a success/failure'
+inputs:
+  MS_TEAMS_WEBHOOK_URL:
+    description: 'the url for the Teams incoming webhook'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup ENV variables
+        id: setup-env
+        run: |
+          import json
+          import re
+          import os
+          with open('${{ github.event_path }}') as fh:
+              event = json.load(fh)
+          # filter out any quote-reply content, i.e. lines that start with ">"
+          newComments = re.sub("^>.*$", "", event['review']['body'], 0, re.M)
+          qaMention = 1 if "QA_TEST" in newComments else 0
+          # JSON-escaped, but strip the start and end quote marks that json.dumps includes
+          escapedTitle = json.dumps(event['pull_request']['title'])[1:-1]
+          with open(os.environ['GITHUB_ENV'], 'a') as fh:
+              print(f'PR_TITLE={escapedTitle}', file=fh)
+              print(f'qa_mention={qaMention}', file=fh)
+        shell: python
+    - name: Set Theme
+        runs-on: ubuntu-latest
+        steps:
+          - name: Set up Success Theme
+            if: job.status == 'success'
+            run: |
+              theme_color='4F7942'
+              echo theme_color=`echo $theme_color | jq -c .` >> $GITHUB_ENV
+          - name: Set up Failure Theme
+            if: job.status == 'success'
+            run: |
+              theme_color='FD3004'
+              echo theme_color=`echo $theme_color | jq -c .` >> $GITHUB_ENV
+        outputs:
+          theme_color: ${{ env.theme_color }}
+    - name: Microsoft Teams Notification
+        uses: skitionek/notify-microsoft-teams@master
+        if: env.qa_mention == 1
+        with:
+          webhook_url: ${{ inputs.MS_TEAMS_WEBHOOK_URL }}
+          theme_color: ${{ theme_color }}
+          raw: >-
+            {
+              "@type": "MessageCard",
+              "@context": "http://schema.org/extensions",
+              "themeColor": ${{ theme_color }},
+              "summary": "GitHub action was a ${{job.status}}!",
+              "sections": [{
+                "activityTitle": "GitHub action was a ${{job.status}}!",
+                "facts": [{
+                  "name": "Repository",
+                  "value": "${{github.event.repository.name}}"
+                },
+                {
+                  "name": "Commit Message",
+                  "value": "${{env.COMMIT_MESSAGE}}"
+                }],
+                "markdown": true
+              }]
+
