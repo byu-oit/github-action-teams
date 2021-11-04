@@ -30,6 +30,7 @@ runs:
       run: |
         theme_color='4F7942'
         echo theme_color=`echo $theme_color | jq -c .` >> $GITHUB_ENV
+      shell: bash
 #      outputs:
 #        theme_color: ${{ env.theme_color }}
     - name: Set up Failure Theme
@@ -38,6 +39,7 @@ runs:
       run: |
         theme_color='FD3004'
         echo theme_color=`echo $theme_color | jq -c .` >> $GITHUB_ENV
+      shell: bash
 #      outputs:
 #        theme_color: ${{ env.theme_color }}
     - name: Microsoft Teams Notification
