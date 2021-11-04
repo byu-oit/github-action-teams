@@ -25,7 +25,7 @@ runs:
               },
               {
                 "name": "Commit Message",
-                "value": "${{env.COMMIT_MESSAGE}}"
+                "value": "${{github.event.head_commit.message}}"
               }],
               "markdown": true
             }]
