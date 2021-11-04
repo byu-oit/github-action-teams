@@ -7,23 +7,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Setup ENV variables
-      id: setup-env
-      run: |
-        import json
-        import re
-        import os
-        with open('${{ github.event_path }}') as fh:
-          event = json.load(fh)
-        # filter out any quote-reply content, i.e. lines that start with ">"
-        newComments = re.sub("^>.*$", "", event['review']['body'], 0, re.M)
-        qaMention = 1 if "QA_TEST" in newComments else 0
-        # JSON-escaped, but strip the start and end quote marks that json.dumps includes
-        escapedTitle = json.dumps(event['pull_request']['title'])[1:-1]
-        with open(os.environ['GITHUB_ENV'], 'a') as fh:
-          print(f'PR_TITLE={escapedTitle}', file=fh)
-          print(f'qa_mention={qaMention}', file=fh)
-      shell: python
     - name: Set up Success Theme
       id: success_theme
       if: job.status == 'success'
@@ -31,8 +14,6 @@ runs:
         theme_color='4F7942'
         echo theme_color=`echo $theme_color | jq -c .` >> $GITHUB_ENV
       shell: bash
-#      outputs:
-#        theme_color: ${{ env.theme_color }}
     - name: Set up Failure Theme
       id: fail_theme
       if: job.status != 'success'
@@ -40,11 +21,8 @@ runs:
         theme_color='FD3004'
         echo theme_color=`echo $theme_color | jq -c .` >> $GITHUB_ENV
       shell: bash
-#      outputs:
-#        theme_color: ${{ env.theme_color }}
     - name: Microsoft Teams Notification
       uses: skitionek/notify-microsoft-teams@master
-      if: env.qa_mention == 1
       with:
         webhook_url: ${{ inputs.MS_TEAMS_WEBHOOK_URL }}
         theme_color: ${{ env.theme_color }}
@@ -66,4 +44,5 @@ runs:
               }],
               "markdown": true
             }]
+          }
 
