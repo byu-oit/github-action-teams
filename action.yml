@@ -11,52 +11,94 @@ runs:
       uses: skitionek/notify-microsoft-teams@master
       with:
         webhook_url: ${{ inputs.MS_TEAMS_WEBHOOK_URL }}
-#        https://github.com/Skitionek/notify-microsoft-teams/blob/master/dist/index.js#L1175
-#        TODO workflow name
-#        TODO workflow state (failure || success)
-#               job.status
-#        TODO link to repo
-#                name = github.event.repository.full_name
-#                link = github.event.repository.html_url
-#        TODO link to run
-#                link = https://github.com/${repoName}/actions/runs/${runId}?
-#        TODO commit message and link to commit (compare button)
-#                sha = github.event.after
-#                compare button = github.event.compare (link)
-#        TODO deployment number (and link)
-#        TODO pushed by author (and link)
-#               pushed by = github.event.sender.login
-#               link      = github.event.sender.url
+        #        https://github.com/Skitionek/notify-microsoft-teams/blob/master/dist/index.js#L1175
+        #        TODO workflow name
+        #        TODO workflow state (failure || success)
+        #               job.status
+        #        TODO link to repo
+        #                name = github.event.repository.full_name
+        #                link = github.event.repository.html_url
+        #        TODO link to run
+        #                link = https://github.com/${repoName}/actions/runs/${runId}?
+        #        TODO commit message and link to commit (compare button)
+        #                sha = github.event.after
+        #                compare button = github.event.compare (link)
+        #        TODO deployment number (and link)
+        #        TODO pushed by author (and link)
+        #               pushed by = github.event.sender.login
+        #               link      = github.event.sender.url
         raw: >-
           {
               "$schema": "https://adaptivecards.io/schemas/adaptive-card.json",
               "@type": "AdaptiveCard",
-              "version": "1.0",
+              "version": "1.2",
               "@context": "http://schema.org/extensions",
               "themeColor": "${{ (job.status == 'success' && '4F7942') || 'FD3004' }}",
               "summary": "GitHub action was a ${{job.status}}!",
               "body": [
                   {
                       "type": "TextBlock",
-                      "text": "The 'Deploy' workflow on 'repo' was 'a success'"
+                      "size": "Medium",
+                      "weight": "Bolder",
+                      "text": "GitHub Actions"
                   },
                   {
-                      "type": "openUrl",
-                      "title": "View Run",
-                      "value": "${{ github.event.repository.url }}/actions/runs/${{ github.run_id }}?"
-                  },
-                  {
-                      "type": "Textblock",
-                      "text": "Commit: ${{ github.event.head_commit.message }}"
+                      "type": "ColumnSet",
+                      "columns": [
+                          {
+                              "type": "Column",
+                              "items": [
+                                  {
+                                      "type": "Image",
+                                      "style": "Person",
+                                      "url": "https://raw.githubusercontent.com/byu-oit/github-action-teams/master/success.jpg",
+                                      "size": "Medium"
+                                  }
+                              ],
+                              "width": "auto"
+                          },
+                          {
+                              "type": "Column",
+                              "items": [
+                                  {
+                                      "type": "TextBlock",
+                                      "text": "The **Deploy** workflow on [byu-oit/example]() was **successful**",
+                                      "wrap": true
+                                  }
+                              ],
+                              "width": "stretch"
+                          }
+                      ]
                   },
                   {
                       "type": "TextBlock",
-                      "text": "Commit: [${{ github.event.head_commit.id }}] (${{ github.event.head_commit.url }}) <br>Action triggered by [${{ github.event.sender.login }}] (${{ github.event.sender.html_url }})",
+                      "text": "head commit message",
                       "wrap": true
                   },
                   {
-                      "type": "TextBlock",
-                      "text": "Check out [Adaptive Cards](https://adaptivecards.io)"
+                      "type": "FactSet",
+                      "facts": [
+                          {
+                              "title": "Deployment:",
+                              "value": "[#20]()"
+                          },
+                          {
+                              "title": "Commit:",
+                              "value": "[123sha]()"
+                          },
+                          {
+                              "title": "Pushed By:",
+                              "value": "[redjojo]() Joanna hugo"
+                          }
+                      ]
+                  }
+              ],
+              "actions": [
+                  {
+                      "type": "Action.OpenUrl",
+                      "title": "View Run",
+                      "url": "https://github.com/byu-oit/testing-github-actions/runs/4121830145?check_suite_focus=true",
+                      "style": "positive"
                   }
               ]
           }
