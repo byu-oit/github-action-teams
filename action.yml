@@ -13,4 +13,23 @@ runs:
         webhook_url: ${{ inputs.MS_TEAMS_WEBHOOK_URL }}
         job: ${{ toJson(job) }}
         steps: ${{ toJson(steps) }}
+        raw: >-
+          {
+            "@type": "MessageCard",
+            "@context": "http://schema.org/extensions",
+            "themeColor": "${{ (job.status == 'success' && '4F7942') || 'FD3004' }}" ,
+            "summary": "GitHub action was a ${{job.status}}!",
+            "sections": [{
+              "activityTitle": "GitHub action was a ${{job.status}}!",
+              "facts": [{
+                "name": "Repository",
+                "value": "${{github.event.repository.name}}"
+              },
+              {
+                "name": "Commit Message",
+                "value": "${{ github.event.head_commit.message }}"
+              }],
+              "markdown": true
+            }]
+          }
 
