@@ -11,25 +11,50 @@ runs:
       uses: skitionek/notify-microsoft-teams@master
       with:
         webhook_url: ${{ inputs.MS_TEAMS_WEBHOOK_URL }}
-        job: ${{ toJson(job) }}
-        steps: ${{ toJson(steps) }}
+#        https://github.com/Skitionek/notify-microsoft-teams/blob/master/dist/index.js#L1175
+#        TODO workflow name
+#        TODO workflow state (failure || success)
+#               job.status
+#        TODO link to repo
+#                name = github.event.repository.full_name
+#                link = github.event.repository.html_url
+#        TODO link to run
+#                link = https://github.com/${repoName}/actions/runs/${runId}?
+#        TODO commit message and link to commit (compare button)
+#                sha = github.event.after
+#                compare button = github.event.compare (link)
+#        TODO deployment number (and link)
+#        TODO pushed by author (and link)
+#               pushed by = github.event.sender.login
+#               link      = github.event.sender.url
         raw: >-
           {
-            "@type": "MessageCard",
-            "@context": "http://schema.org/extensions",
-            "themeColor": "${{ (job.status == 'success' && '4F7942') || 'FD3004' }}" ,
-            "summary": "GitHub action was a ${{job.status}}!",
-            "sections": [{
-              "activityTitle": "GitHub action was a ${{job.status}}!",
-              "facts": [{
-                "name": "Repository",
-                "value": "${{github.event.repository.name}}"
-              },
-              {
-                "name": "Commit Message",
-                "value": "${{ github.event.head_commit.message }}"
-              }],
-              "markdown": true
-            }]
+              "$schema": "https://adaptivecards.io/schemas/adaptive-card.json",
+              "type": "AdaptiveCard",
+              "version": "1.0",
+              "body": [
+                  {
+                      "type": "TextBlock",
+                      "text": "The 'Deploy' workflow on 'repo' was 'a success'"
+                  },
+                  {
+                      "type": "openUrl",
+                      "title": "View Run",
+                      "value": "${{ github.event.repository.url }}/actions/runs/${{ github.run_id }}?"
+                  },
+                  {
+                      "type": "Textblock",
+                      "text": "Commit: ${{ github.event.head_commit.message }}"
+                  },
+                  {
+                      "type": "TextBlock",
+                      "text": "Commit: [${{ github.event.head_commit.id }}] (${{ github.event.head_commit.url }}) <br>Action triggered by [${{ github.event.sender.login }}] (${{ github.event.sender.html_url }})",
+                      "wrap": true
+                  },
+                  {
+                      "type": "TextBlock",
+                      "text": "Check out [Adaptive Cards](https://adaptivecards.io)"
+                  }
+              ]
           }
 
