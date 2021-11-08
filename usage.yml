@@ -1,0 +1,17 @@
+on: [push]
+
+jobs:
+  hello_world_job:
+    runs-on: ubuntu-latest
+    name: Send a msg to Teams
+#    This is the usage for v1 and test
+#    copy one of these steps to your flow to use this action
+    steps:
+      - name: msg_v1
+        uses: byu-oit/github-action-teams@v1
+        with:
+          MS_TEAMS_WEBHOOK_URL: ${{ secrets.MS_TEAMS_WEBHOOK_URL }}
+      - name: msg_test
+        uses: byu-oit/github-action-teams@test
+        with:
+          MS_TEAMS_WEBHOOK_URL: ${{ secrets.MS_TEAMS_WEBHOOK_URL }}
