@@ -10,7 +10,7 @@ The "test" tag results in a message with information about the repo but no links
 
 # Results
 This is what the "v1" tag message looks like
-![v1 results](v1.png)
+![v1 results](v1.jpg)
 
 This is what the "test" tag message looks like
-![test results](test.png)
+![test results](test.jpg)
