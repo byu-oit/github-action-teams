@@ -17,7 +17,7 @@ runs:
             "@context": "https://schema.org/extensions",
             "summary": "${{ job.status }}",
             "themeColor": "${{ (job.status == 'success' && '4F7942') || 'FD3004' }}",
-            "title": "The Deploy workflow on [${{github.event.repository.name}}](${{github.event.repository.html_url}}) was a ${{job.status}}",
+            "title": "The ${{ GITHUB_WORKFLOW }} workflow on ${{github.event.repository.name}} was a ${{job.status}}",
             "sections": [
               {
                 "activityTitle": "${{ github.event.head_commit.message }}",
@@ -38,7 +38,7 @@ runs:
                   },
                   {
                     "name": "Triggered by:",
-                    "value": "[ ${{ github.event.sender.login }} ](${{ github.event.sender.url }})"
+                    "value": "[ ${{ github.event.sender.login }} ](${{ github.event.sender.html_url }})"
                   }
                 ]
               }
