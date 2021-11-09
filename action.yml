@@ -45,13 +45,18 @@ runs:
             ],
             "potentialAction": [
               {
-                "@type": "HttpPOST",
-                "name": "Retry",
-                "target": "http://..."
+                "@type": "OpenUri",
+                "name": "View Actions",
+                "targets": [
+                  {
+                    "os": "default",
+                    "uri": "${{ github.event.repository.url }}/actions"
+                  }
+                ]
               },
               {
                 "@type": "OpenUri",
-                "name": "View Repo in GitHub",
+                "name": "View Repo",
                 "targets": [
                   {
                     "os": "default",
