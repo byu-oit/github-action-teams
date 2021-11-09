@@ -10,6 +10,7 @@ runs:
     - name: Microsoft Teams Notification
       uses: skitionek/notify-microsoft-teams@master
       with:
+        webhook_url: ${{ inputs.MS_TEAMS_WEBHOOK_URL }}
         raw: >-
           {
             "@type": "MessageCard",
