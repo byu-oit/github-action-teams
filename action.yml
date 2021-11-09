@@ -17,7 +17,7 @@ runs:
             "@context": "https://schema.org/extensions",
             "summary": "${{ job.status }}",
             "themeColor": "${{ (job.status == 'success' && '4F7942') || 'FD3004' }}",
-            "title": "The ${{ GITHUB_WORKFLOW }} workflow on ${{github.event.repository.name}} was a ${{job.status}}",
+            "title": "The ${{ github.action }} workflow on ${{github.repository}}/@${{ github.ref_name }} was a ${{job.status}}",
             "sections": [
               {
                 "activityTitle": "${{ github.event.head_commit.message }}",
@@ -26,7 +26,7 @@ runs:
                 "facts": [
                   {
                     "name": "Repository:",
-                    "value": "[${{github.event.repository.name}}](${{github.event.repository.html_url}})"
+                    "value": "[${{github.repository}}](${{github.event.repository.html_url}})"
                   },
                   {
                     "name": "Deploy #:",
