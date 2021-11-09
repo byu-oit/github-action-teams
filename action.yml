@@ -29,10 +29,6 @@ runs:
                     "value": "[${{github.repository}}](${{github.event.repository.html_url}})"
                   },
                   {
-                    "name": "Deploy #:",
-                    "value": "[${{ github.job}}](${{ github.event.repository.url }}/actions/${{github.action}})"
-                  },
-                  {
                     "name": "Commit:",
                     "value": "[${{ github.event.head_commit.id}}](${{ github.event.head_commit.url}})"
                   },
