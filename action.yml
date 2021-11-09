@@ -30,7 +30,7 @@ runs:
                   },
                   {
                     "name": "Deploy #:",
-                    "value": "TODO"
+                    "value": "[${{ github.job}}](${{ github.event.repository.url }}/actions/${{github.action}})"
                   },
                   {
                     "name": "Commit:",
