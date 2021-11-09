@@ -10,7 +10,7 @@ runs:
     - name: Microsoft Teams Notification
       uses: skitionek/notify-microsoft-teams@master
       with:
-        raw: <-
+        raw: >-
           {
             "@type": "MessageCard",
             "@context": "https://schema.org/extensions",
