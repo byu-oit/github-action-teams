@@ -10,6 +10,53 @@ runs:
     - name: Microsoft Teams Notification
       uses: skitionek/notify-microsoft-teams@master
       with:
-        webhook_url: ${{ inputs.MS_TEAMS_WEBHOOK_URL }}
-        job: ${{ toJson(job) }}
-        steps: ${{ toJson(steps) }}
+        raw: <-
+          {
+            "@type": "MessageCard",
+            "@context": "https://schema.org/extensions",
+            "summary": "${{ job.status }}",
+            "themeColor": "${{ (job.status == 'success' && '4F7942') || 'FD3004' }}",
+            "title": "The Deploy workflow on [${{github.event.repository.name}}](${{github.event.repository.html_url}}) was a ${{job.status}}",
+            "sections": [
+              {
+                "activityTitle": "${{ github.event.head_commit.message }}",
+                "activitySubtitle": "${{ github.event.head_commit.timestamp}}",
+                "activityImage": "${{ (job.status == 'success' && 'https://raw.githubusercontent.com/Skitionek/notify-microsoft-teams/master/icons/success.png') || 'https://raw.githubusercontent.com/Skitionek/notify-microsoft-teams/master/icons/failure.png' }}",
+                "facts": [
+                  {
+                    "name": "Repository:",
+                    "value": "[${{github.event.repository.name}}](${{github.event.repository.html_url}})"
+                  },
+                  {
+                    "name": "Deploy #:",
+                    "value": "TODO"
+                  },
+                  {
+                    "name": "Commit:",
+                    "value": "[${{ github.event.head_commit.id}}](${{ github.event.head_commit.url}})"
+                  },
+                  {
+                    "name": "Triggered by:",
+                    "value": "[ ${{ github.event.sender.login }} ](${{ github.event.sender.url }})"
+                  }
+                ]
+              }
+            ],
+            "potentialAction": [
+              {
+                "@type": "HttpPOST",
+                "name": "Retry",
+                "target": "http://..."
+              },
+              {
+                "@type": "OpenUri",
+                "name": "View Repo in GitHub",
+                "targets": [
+                  {
+                    "os": "default",
+                    "uri": " ${{ github.event.repository.url }}"
+                  }
+                ]
+              }
+            ]
+          }
