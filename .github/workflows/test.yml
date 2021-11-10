@@ -5,7 +5,7 @@ on: [push]
 jobs:
   test_success:
     runs-on: ubuntu-latest
-    name: Send a msg to Teams
+    name: Send a SUCCESS msg to Teams
     steps:
       - uses: actions/checkout@v1
       - id: send-msg
@@ -14,7 +14,7 @@ jobs:
           MS_TEAMS_WEBHOOK_URL: ${{ secrets.MS_TEAMS_WEBHOOK_URL }}
   test_failure:
     runs-on: ubuntu-latest
-    name: Send a msg to Teams
+    name: Send a FAILURE msg to Teams
     steps:
       - name: checkout
         uses: actions/checkout@v1
