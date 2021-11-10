@@ -12,9 +12,14 @@ jobs:
         uses: ./
         with:
           MS_TEAMS_WEBHOOK_URL: ${{ secrets.MS_TEAMS_WEBHOOK_URL }}
+
   test_failure:
-    runs-on: ubuntu-latest
     name: Send a FAILURE msg to Teams
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      fail-fast: false
+      matrix:
+        operating_system: [ubuntu-latest]
     steps:
       - name: checkout
         uses: actions/checkout@v1
