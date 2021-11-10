@@ -15,7 +15,7 @@ jobs:
 
   test_failure:
     name: Send a FAILURE msg to Teams
-    runs-on: ${{ matrix.operating-system }}
+    runs-on: ${{ matrix.operating_system }}
     strategy:
       fail-fast: false
       matrix:
