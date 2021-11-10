@@ -1,5 +1,5 @@
 name: 'Teams Notification'
-description: 'Notify a given channel in MS Teams that a deployment was a success/failure'
+description: 'Notify a given channel in MS Teams that a GHA deployment was a success/failure'
 inputs:
   MS_TEAMS_WEBHOOK_URL:
     description: 'the url for the Teams incoming webhook'
