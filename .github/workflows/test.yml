@@ -26,9 +26,10 @@ jobs:
 
       - name: Fail On Purpose
         working-directory: src
-        run: npm audit --audit-level=critical
+        run: npm lint
 
       - name: notify MS Teams
         uses: ./
+        if: always()
         with:
           MS_TEAMS_WEBHOOK_URL: ${{ secrets.MS_TEAMS_WEBHOOK_URL }}
