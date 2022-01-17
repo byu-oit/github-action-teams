@@ -11,9 +11,6 @@ runs:
       shell: bash
       run: |
         echo "NEW_MESSAGE=${{ github.event.head_commit.message }}" | awk '{printf "%s\\\\n", $0}' >> $GITHUB_ENV
-    - name: Test Message
-      shell: bash
-      run: echo ${{ env.NEW_MESSAGE }}
     - name: Microsoft Teams Notification
       uses: skitionek/notify-microsoft-teams@master
       with:
@@ -27,7 +24,7 @@ runs:
             "title": "The ${{ github.action }} workflow on ${{github.repository}}/@${{ github.ref_name }} was ${{ (job.status == 'cancelled' && '') || 'a' }} ${{job.status}}",
             "sections": [
               {
-                "activityTitle": "${{ github.event.head_commit.message }}",
+                "activityTitle": "${{ env.NEW_MESSAGE }}",
                 "activitySubtitle": "${{ github.event.head_commit.timestamp}}",
                 "activityImage": "${{ (job.status == 'success' && 'https://raw.githubusercontent.com/Skitionek/notify-microsoft-teams/master/icons/success.png') || 'https://raw.githubusercontent.com/Skitionek/notify-microsoft-teams/master/icons/failure.png' }}",
                 "facts": [
