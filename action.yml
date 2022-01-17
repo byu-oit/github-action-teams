@@ -10,7 +10,7 @@ runs:
     - name: Parse Commit Message
       shell: bash
       run: |
-        echo ${{ github.event.head_commit.message }} | sed 's/\\/\\\\/g'
+        echo "${{ github.event.head_commit.message }}" | sed 's/\\/\\\\/g'
     - name: Microsoft Teams Notification
       uses: skitionek/notify-microsoft-teams@master
       with:
