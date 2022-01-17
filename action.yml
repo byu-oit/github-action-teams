@@ -10,7 +10,9 @@ runs:
     - name: Parse Commit Message
       shell: bash
       run: |
-        printf "%q" "${{ github.event.head_commit.message }}" | sed 's/\\/\\\\/g'
+        printf -v ESCAPED_COMMIT_MESSAGE "%q" "${{ github.event.head_commit.message }}" | sed 's/\\/\\\\/g'
+        export PARSED_COMMIT_MESSAGE="${MY_VAR:2:-1}"
+        echo $PARSED_COMMIT_MESSAGE
     - name: Microsoft Teams Notification
       uses: skitionek/notify-microsoft-teams@master
       with:
