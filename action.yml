@@ -11,8 +11,7 @@ runs:
       shell: bash
       run: |
         printf -v ESCAPED_COMMIT_MESSAGE "%q" "${{ github.event.head_commit.message }}" | sed 's/\\/\\\\/g'
-        export PARSED_COMMIT_MESSAGE="${ESCAPED_COMMIT_MESSAGE:2:-1}"
-        echo $PARSED_COMMIT_MESSAGE
+        echo "${ESCAPED_COMMIT_MESSAGE:2:-1}"
     - name: Microsoft Teams Notification
       uses: skitionek/notify-microsoft-teams@master
       with:
