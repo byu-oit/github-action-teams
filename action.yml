@@ -10,11 +10,10 @@ runs:
     - name: Parse Commit Message
       shell: bash
       run: |
-        export NEW_MESSAGE=$(echo -n "${{ github.event.head_commit.message }}" | awk '{printf "%s\\\\n", $0}')
-        echo "::set-env name=NEW_MESSAGE::$NEW_MESSAGE"
+        echo "NEW_MESSAGE=${{ github.event.head_commit.message }}" | awk '{printf "%s\\\\n", $0}' >> $GITHUB_ENV
     - name: Test Message
       shell: bash
-      run: echo $NEW_MESSAGE
+      run: echo ${{ env.NEW_MESSAGE }}
     - name: Microsoft Teams Notification
       uses: skitionek/notify-microsoft-teams@master
       with:
