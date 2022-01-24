@@ -7,10 +7,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Parse Commit Message
-      shell: bash
-      run: |
-        echo "NEW_MESSAGE=${{ toJSON(github.event.head_commit.message) }}" | cut -f 1 -d$'\n' >> $GITHUB_ENV
     - name: Microsoft Teams Notification
       uses: skitionek/notify-microsoft-teams@master
       with:
@@ -24,7 +20,7 @@ runs:
             "title": "The ${{ github.action }} workflow on ${{github.repository}}/@${{ github.ref_name }} was ${{ (job.status == 'cancelled' && '') || 'a' }} ${{job.status}}",
             "sections": [
               {
-                "activityTitle": "${{ env.NEW_MESSAGE }}",
+                "activityTitle": ${{ toJSON(github.event.head_commit.message) }},
                 "activitySubtitle": "${{ github.event.head_commit.timestamp}}",
                 "activityImage": "${{ (job.status == 'success' && 'https://raw.githubusercontent.com/Skitionek/notify-microsoft-teams/master/icons/success.png') || 'https://raw.githubusercontent.com/Skitionek/notify-microsoft-teams/master/icons/failure.png' }}",
                 "facts": [
