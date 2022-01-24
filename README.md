@@ -18,7 +18,7 @@ Create a GitHub secret `MS_TEAMS_WEBHOOK_URL` and set the value to the URL of yo
 This determines where the notification will be sent. Consider sending test notifications to `Application Engineering > notification-testing` during development.
 
 The step will need an ID, which shows up in the title of the card notification (The <ID> workflow...)
-The tag (`@js` in the examples) is the name of the branch or tag that the event came from.
+The tag (`@js` in the examples) is the name of the branch or tag that the event came from
 
 # Results
 This is what the success message looks like
