@@ -13,24 +13,26 @@ jobs:
         with:
           MS_TEAMS_WEBHOOK_URL: ${{ secrets.MS_TEAMS_WEBHOOK_URL }}
 
-  test_failure:
-    name: Send a FAILURE msg to Teams
-    runs-on: ${{ matrix.operating_system }}
-    strategy:
-      fail-fast: false
-      matrix:
-        operating_system: [ubuntu-latest]
-    steps:
-      - name: checkout
-        uses: actions/checkout@v1
-
-      - name: Fail On Purpose
-        working-directory: src
-        run: npm lint
-
-      - name: notify MS Teams
-        id: send-fail-msg
-        uses: ./
-        if: always()
-        with:
-          MS_TEAMS_WEBHOOK_URL: ${{ secrets.MS_TEAMS_WEBHOOK_URL }}
+#  This is commented out because at a glance it makes ALL runs look like they failed
+#  Not a good UI experience
+#  test_failure:
+#    name: Send a FAILURE msg to Teams
+#    runs-on: ${{ matrix.operating_system }}
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        operating_system: [ubuntu-latest]
+#    steps:
+#      - name: checkout
+#        uses: actions/checkout@v1
+#
+#      - name: Fail On Purpose
+#        working-directory: src
+#        run: npm lint
+#
+#      - name: notify MS Teams
+#        id: send-fail-msg
+#        uses: ./
+#        if: always()
+#        with:
+#          MS_TEAMS_WEBHOOK_URL: ${{ secrets.MS_TEAMS_WEBHOOK_URL }}
