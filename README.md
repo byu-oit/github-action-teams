@@ -1,4 +1,5 @@
 # ![BYU logo](https://www.hscripts.com/freeimages/logos/university-logos/byu/byu-logo-clipart-128.gif) github-action-teams
+![Test](https://github.com/byu-oit/github-action-teams/actions/workflows/test.yml/badge.svg)
 
 # Teams Notification
 This GitHub Action sends a notification to Teams saying if the GitHub Actions Job was successful or not.
