@@ -4,10 +4,10 @@ jobs:
   hello_world_job:
     runs-on: ubuntu-latest
     name: Send a msg to Teams
-#    copy one of this step to your flow to use this action
     steps:
-      - name: msg_v2
-        id: example_flow
+     # copy this step to your flow to use this action
+      - name: Teams Notification
         uses: byu-oit/github-action-teams@v2
+        if: always()
         with:
           MS_TEAMS_WEBHOOK_URL: ${{ secrets.MS_TEAMS_WEBHOOK_URL }}
