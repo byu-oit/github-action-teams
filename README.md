@@ -1,4 +1,5 @@
 # ![BYU logo](https://www.hscripts.com/freeimages/logos/university-logos/byu/byu-logo-clipart-128.gif) github-action-teams
+![Test](https://github.com/byu-oit/github-action-teams/actions/workflows/test.yml/badge.svg)
 
 # Teams Notification
 This GitHub Action sends a notification to Teams saying if the GitHub Actions Job was successful or not.
@@ -7,9 +8,9 @@ This GitHub action can be part of existing GitHub action pipelines. This action 
 # Usage
 Checkout the "usage.yml" file to see exactly how you would use this action. In general, it looks like
 
-      - name: msg_v2
-        id: example_flow
+      - name: Teams Notification
         uses: byu-oit/github-action-teams@v2
+        if: always()
         with:
           MS_TEAMS_WEBHOOK_URL: ${{ secrets.MS_TEAMS_WEBHOOK_URL }}
 
@@ -26,6 +27,3 @@ This is what the success message looks like
 
 This is what the failure message looks like
 ![failure example](failure.png)
-
-# Notes
-The GitHub actions currently say the Test action is failing. This is by design in order to test sending a fail notification.
