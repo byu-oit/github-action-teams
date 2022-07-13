@@ -6,7 +6,7 @@ inputs:
     required: true
   RELEASE_URL:
     description: 'if the Github Action generated release assets, we can relay the url in the Teams message'
-    required: false
+    required: true
 
 runs:
   using: 'composite'
