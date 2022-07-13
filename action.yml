@@ -11,6 +11,10 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: See file structure
+      shell: bash
+      run: ls -la
+      
     - name: Set Potential Actions When There is No Release URL
       uses: rgarcia-phi/json-to-variables@v1.1.0
       with:
