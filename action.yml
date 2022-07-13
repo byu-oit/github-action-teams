@@ -46,7 +46,7 @@ runs:
                   },
                   {
                     "name": "Release URL: ",
-                    "value": "[${{inputs.RELEASE_URL}}] (${{inputs.RELEASE_URL}})"
+                    "value": "[${{inputs.RELEASE_URL}}](${{inputs.RELEASE_URL}})"
                   }
                 ]
               }
