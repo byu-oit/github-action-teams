@@ -4,65 +4,67 @@ inputs:
   MS_TEAMS_WEBHOOK_URL:
     description: 'the url for the Teams incoming webhook'
     required: true
+  RELEASE_URL:
+    description: 'if the Github Action generated release assets, we can relay the url in the Teams message'
+    required: false
+
 runs:
   using: 'composite'
   steps:
-    - name: Parse Commit Message
+    - name: Set Potential Actions When There is No Release URL
+      uses: rgarcia-phi/json-to-variables@v1.1.0
+      with:
+        filename: 'potentialActionsWithoutRelease.json'
+        prefix: potential_actions
+      if: ${{inputs.RELEASE_URL == ''}}
+    
+    - name: Set Potential Actions When There is a Release URL
+      uses: rgarcia-phi/json-to-variables@v1.1.0
+      with:
+        filename: 'potentialActionsWithRelease.json'
+        prefix: potential_actions
+      if: ${{inputs.RELEASE_URL != ''}}
+    
+    - name: Output potential actions in json
       shell: bash
       run: |
-        echo NEW_MESSAGE=${{ toJSON(github.event.head_commit.message) }} | awk -F'\\\\[rn]' '{print $1}' >> $GITHUB_ENV
-    - name: Microsoft Teams Notification
-      uses: skitionek/notify-microsoft-teams@master
-      with:
-        webhook_url: ${{ inputs.MS_TEAMS_WEBHOOK_URL }}
-        raw: >-
-          {
-            "@type": "MessageCard",
-            "@context": "https://schema.org/extensions",
-            "summary": "${{ job.status }}",
-            "themeColor": "${{ (job.status == 'success' && '4F7942') || 'FD3004' }}",
-            "title": "The ${{ github.action }} workflow on ${{github.repository}}/@${{ github.ref_name }} was ${{ (job.status == 'cancelled' && '') || 'a' }} ${{job.status}}",
-            "sections": [
-              {
-                "activityTitle": ${{ toJSON(env.NEW_MESSAGE) }},
-                "activitySubtitle": "${{ github.event.head_commit.timestamp}}",
-                "activityImage": "${{ (job.status == 'success' && 'https://raw.githubusercontent.com/Skitionek/notify-microsoft-teams/master/icons/success.png') || 'https://raw.githubusercontent.com/Skitionek/notify-microsoft-teams/master/icons/failure.png' }}",
-                "facts": [
-                  {
-                    "name": "Repository:",
-                    "value": "[${{github.repository}}](${{github.event.repository.html_url}})"
-                  },
-                  {
-                    "name": "Commit:",
-                    "value": "[${{ github.event.head_commit.id}}](${{ github.event.head_commit.url}})"
-                  },
-                  {
-                    "name": "Triggered by:",
-                    "value": "[ ${{ github.event.sender.login }} ](${{ github.event.sender.html_url }})"
-                  }
-                ]
-              }
-            ],
-            "potentialAction": [
-              {
-                "@type": "OpenUri",
-                "name": "View Actions",
-                "targets": [
-                  {
-                    "os": "default",
-                    "uri": "${{ github.event.repository.url }}/actions"
-                  }
-                ]
-              },
-              {
-                "@type": "OpenUri",
-                "name": "View Repo",
-                "targets": [
-                  {
-                    "os": "default",
-                    "uri": "${{ github.event.repository.url }}"
-                  }
-                ]
-              }
-            ]
-          }
+        echo "${{env.potential_actions}}"
+
+    # - name: Parse Commit Message
+    #   shell: bash
+    #   run: |
+    #     echo NEW_MESSAGE=${{ toJSON(github.event.head_commit.message) }} | awk -F'\\\\[rn]' '{print $1}' >> $GITHUB_ENV
+    # - name: Microsoft Teams Notification
+    #   uses: skitionek/notify-microsoft-teams@master
+    #   with:
+    #     webhook_url: ${{ inputs.MS_TEAMS_WEBHOOK_URL }}
+    #     raw: >-
+    #       {
+    #         "@type": "MessageCard",
+    #         "@context": "https://schema.org/extensions",
+    #         "summary": "${{ job.status }}",
+    #         "themeColor": "${{ (job.status == 'success' && '4F7942') || 'FD3004' }}",
+    #         "title": "The ${{ github.action }} workflow on ${{github.repository}}/@${{ github.ref_name }} was ${{ (job.status == 'cancelled' && '') || 'a' }} ${{job.status}}",
+    #         "sections": [
+    #           {
+    #             "activityTitle": ${{ toJSON(env.NEW_MESSAGE) }},
+    #             "activitySubtitle": "${{ github.event.head_commit.timestamp}}",
+    #             "activityImage": "${{ (job.status == 'success' && 'https://raw.githubusercontent.com/Skitionek/notify-microsoft-teams/master/icons/success.png') || 'https://raw.githubusercontent.com/Skitionek/notify-microsoft-teams/master/icons/failure.png' }}",
+    #             "facts": [
+    #               {
+    #                 "name": "Repository:",
+    #                 "value": "[${{github.repository}}](${{github.event.repository.html_url}})"
+    #               },
+    #               {
+    #                 "name": "Commit:",
+    #                 "value": "[${{ github.event.head_commit.id}}](${{ github.event.head_commit.url}})"
+    #               },
+    #               {
+    #                 "name": "Triggered by:",
+    #                 "value": "[ ${{ github.event.sender.login }} ](${{ github.event.sender.html_url }})"
+    #               }
+    #             ]
+    #           }
+    #         ],
+    #         "potentialAction": ${{env.potential_actions}}
+    #       }

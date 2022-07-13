@@ -1,0 +1,22 @@
+[
+    {
+      "@type": "OpenUri",
+      "name": "View Actions",
+      "targets": [
+        {
+          "os": "default",
+          "uri": "${{ github.event.repository.url }}/actions"
+        }
+      ]
+    },
+    {
+      "@type": "OpenUri",
+      "name": "View Repo",
+      "targets": [
+        {
+          "os": "default",
+          "uri": "${{ github.event.repository.url }}"
+        }
+      ]
+    }
+]
