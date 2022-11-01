@@ -16,4 +16,6 @@ A GitHub Action for sending Microsoft Teams notifications
 - Create an Incoming Webhook in Teams, following [these instructions](https://learn.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook#create-an-incoming-webhook), and copy the URL
 - Create a GitHub secret `MS_TEAMS_WEBHOOK_URL` using the copied URL
 
-<!-- TODO: Add example pictures -->
+## Example
+
+<img src="https://github.com/byu-oit/github-action-teams/raw/staging/images/example.png" width="500">
