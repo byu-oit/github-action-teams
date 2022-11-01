@@ -1,68 +1,14 @@
 name: 'Teams Notification'
 description: 'Notify a given channel in MS Teams that a GHA deployment was a success/failure'
 inputs:
-  MS_TEAMS_WEBHOOK_URL:
-    description: 'the url for the Teams incoming webhook'
+  status:
+    description: 'The workflow status'
+    # One of: success, failure, neutral, cancelled, skipped, timed_out, or action_required
+    required: true
+  webhook-url:
+    description: 'The Microsoft Teams incoming webhook URL'
+    # https://learn.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook#create-an-incoming-webhook
     required: true
 runs:
-  using: 'composite'
-  steps:
-    - name: Parse Commit Message
-      shell: bash
-      run: |
-        echo NEW_MESSAGE=${{ toJSON(github.event.head_commit.message) }} | awk -F'\\\\[rn]' '{print $1}' >> $GITHUB_ENV
-    - name: Microsoft Teams Notification
-      uses: skitionek/notify-microsoft-teams@master
-      with:
-        webhook_url: ${{ inputs.MS_TEAMS_WEBHOOK_URL }}
-        raw: >-
-          {
-            "@type": "MessageCard",
-            "@context": "https://schema.org/extensions",
-            "summary": "${{ job.status }}",
-            "themeColor": "${{ (job.status == 'success' && '4F7942') || 'FD3004' }}",
-            "title": "The ${{ github.action }} workflow on ${{github.repository}}/@${{ github.ref_name }} was ${{ (job.status == 'cancelled' && '') || 'a' }} ${{job.status}}",
-            "sections": [
-              {
-                "activityTitle": ${{ toJSON(env.NEW_MESSAGE) }},
-                "activitySubtitle": "${{ github.event.head_commit.timestamp}}",
-                "activityImage": "${{ (job.status == 'success' && 'https://raw.githubusercontent.com/Skitionek/notify-microsoft-teams/master/icons/success.png') || 'https://raw.githubusercontent.com/Skitionek/notify-microsoft-teams/master/icons/failure.png' }}",
-                "facts": [
-                  {
-                    "name": "Repository:",
-                    "value": "[${{github.repository}}](${{github.event.repository.html_url}})"
-                  },
-                  {
-                    "name": "Commit:",
-                    "value": "[${{ github.event.head_commit.id}}](${{ github.event.head_commit.url}})"
-                  },
-                  {
-                    "name": "Triggered by:",
-                    "value": "[ ${{ github.event.sender.login }} ](${{ github.event.sender.html_url }})"
-                  }
-                ]
-              }
-            ],
-            "potentialAction": [
-              {
-                "@type": "OpenUri",
-                "name": "View Actions",
-                "targets": [
-                  {
-                    "os": "default",
-                    "uri": "${{ github.event.repository.url }}/actions"
-                  }
-                ]
-              },
-              {
-                "@type": "OpenUri",
-                "name": "View Repo",
-                "targets": [
-                  {
-                    "os": "default",
-                    "uri": "${{ github.event.repository.url }}"
-                  }
-                ]
-              }
-            ]
-          }
+  using: 'node16'
+  main: 'dist/index.js'

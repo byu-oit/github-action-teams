@@ -1,0 +1,36 @@
+{
+  "name": "github-action-teams",
+  "version": "1.0.0",
+  "description": "A GitHub Action for sending Teams notifications",
+  "main": "index.js",
+  "scripts": {
+    "lint": "standard --verbose | snazzy",
+    "package": "ncc build index.js -m -o dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/byu-oit/github-action-teams.git"
+  },
+  "author": "Gary Crye <gary_crye@byu.edu>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/byu-oit/github-action-teams/issues"
+  },
+  "homepage": "https://github.com/byu-oit/github-action-teams#readme",
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/github": "^5.1.1",
+    "node-fetch": "^2.6.7"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.34.0",
+    "snazzy": "^9.0.0",
+    "standard": "^17.0.0"
+  },
+  "standard": {
+    "ignore": [
+      "/dist"
+    ]
+  }
+}

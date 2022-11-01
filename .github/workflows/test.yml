@@ -1,38 +1,40 @@
-name: Test
-
-on: [push]
+name: CI
+on:
+  push:
+    branches:
+      - staging
+  pull_request:
+    branches:
+      - staging
 
 jobs:
-  test_success:
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
-    name: Send a SUCCESS msg to Teams
     steps:
-      - uses: actions/checkout@v1
-      - id: send-success-msg
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: npm
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: npm ci
+        run: npm ci --prefer-offline
+
+      - name: npm lint
+        run: npm run lint
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Send Teams notification
         uses: ./
         with:
-          MS_TEAMS_WEBHOOK_URL: ${{ secrets.MS_TEAMS_WEBHOOK_URL }}
-
-#  This is commented out because at a glance it makes ALL runs look like they failed
-#  Not a good UI experience
-#  test_failure:
-#    name: Send a FAILURE msg to Teams
-#    runs-on: ${{ matrix.operating_system }}
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        operating_system: [ubuntu-latest]
-#    steps:
-#      - name: checkout
-#        uses: actions/checkout@v1
-#
-#      - name: Fail On Purpose
-#        working-directory: src
-#        run: npm lint
-#
-#      - name: notify MS Teams
-#        id: send-fail-msg
-#        uses: ./
-#        if: always()
-#        with:
-#          MS_TEAMS_WEBHOOK_URL: ${{ secrets.MS_TEAMS_WEBHOOK_URL }}
+          status: ${{ job.status }}
+          webhook-url: ${{ secrets.MS_TEAMS_WEBHOOK_URL }}
+        # We need to manually check the notification
