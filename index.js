@@ -88,7 +88,7 @@ async function run () {
         runId,
         runNumber,
         payload: {
-          action, // Activity Type from https://help.github.com/en/actions/reference/events-that-trigger-workflows#pull-request-event-pull_request
+          action, // Activity Type from https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request
           ref,
           head_commit: {
             message: headCommitMessage
@@ -117,6 +117,12 @@ async function run () {
       ? `Commit [**${sha.substring(0, 8)}**](https://github.com/${repoName}/commit/${sha}) pushed`
       : `Pull request [**#${pullRequestNumber}**](https://github.com/${repoName}/pull/${pullRequestNumber}) ${action}`
 
+    // Markdown links, with bolded text
+    const workflowLink = `[**${removeAsterisks(workflow)}**](https://github.com/${repoName}/actions?query=workflow%3A"${encodeURIComponent(workflow)}")`
+    const branchLink = `[**${removeAsterisks(branch)}**](https://github.com/${repoName}/tree/${branch})`
+    const repoLink = `[**${removeAsterisks(repoName)}**](https://github.com/${repoName})`
+    const githubUsernameLink = `[**${githubUsername}**](https://github.com/${githubUsername})`
+
     const body = JSON.stringify({
       type: 'message',
       attachments: [
@@ -141,7 +147,7 @@ async function run () {
                     items: [
                       {
                         type: 'TextBlock',
-                        text: `The [**${removeAsterisks(workflow)}**](https://github.com/${repoName}/actions?query=workflow%3A"${encodeURIComponent(workflow)}") workflow on the [**${removeAsterisks(branch)}**](https://github.com/${repoName}/tree/${branch}) branch of [**${removeAsterisks(repoName)}**](https://github.com/${repoName}) ${getStatusText(status)}`,
+                        text: `The ${workflowLink} workflow on the ${branchLink} branch of ${repoLink} ${getStatusText(status)}`,
                         wrap: true
                       }
                     ],
@@ -193,7 +199,7 @@ async function run () {
                       },
                       {
                         type: 'TextBlock',
-                        text: `[**${removeAsterisks(workflow)}**](https://github.com/${repoName}/actions?query=workflow%3A"${encodeURIComponent(workflow)}") #${runNumber}: ${eventMessage} by [**${githubUsername}**](https://github.com/${githubUsername}) (${fullName})`,
+                        text: `${workflowLink} #${runNumber}: ${eventMessage} by ${githubUsernameLink} (${fullName})`,
                         wrap: true,
                         size: 'Small'
                       }
