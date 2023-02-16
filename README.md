@@ -2,6 +2,8 @@
 A GitHub Action for sending Microsoft Teams notifications
 
 ## Usage
+- [Create an Incoming Webhook in Teams](https://learn.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook#create-an-incoming-webhook) and copy the URL
+- [Create a GitHub secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository), `MS_TEAMS_WEBHOOK_URL`, using the copied URL
 - At the end of a job that runs on `push` or `pull_request`, add the following step
 
 ```yaml
@@ -12,9 +14,6 @@ A GitHub Action for sending Microsoft Teams notifications
     status: ${{ job.status }}
     webhook-url: ${{ secrets.MS_TEAMS_WEBHOOK_URL }}
 ```
-
-- Create an Incoming Webhook in Teams, following [these instructions](https://learn.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook#create-an-incoming-webhook), and copy the URL
-- Create a GitHub secret `MS_TEAMS_WEBHOOK_URL` using the copied URL
 
 ## Example
 
