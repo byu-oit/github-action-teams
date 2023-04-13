@@ -108,7 +108,9 @@ async function run () {
       : github.context.payload.pull_request.head.ref // 'main'
 
     const message = (eventName === 'push')
-      ? headCommitMessage.split('\n')[0]
+      ? headCommitMessage
+        .split('\n')[0] // First line
+        .replace(/Merge pull request #(\d+)/, `Merge pull request [#$1](https://github.com/${repoName}/pull/$1)`) // Linkify PR number if this is a merge commit
       : title
 
     const fullName = await getFullName(githubUsername)
