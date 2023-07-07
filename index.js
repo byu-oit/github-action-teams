@@ -104,21 +104,29 @@ async function run () {
       }
     } = github
 
-    const branch = (eventName === 'pull_request') ? github.context.payload.pull_request.head.ref // 'main'
+    const branch = (eventName === 'pull_request')
+      ? github.context.payload.pull_request.head.ref // 'main'
       : ref.slice('refs/heads/'.length) // ref = 'refs/heads/main'
 
-    const message = (eventName === 'workflow_dispatch' || eventName === 'schedule') ? workflow
-      : (eventName === 'pull_request') ? title
-        : /* (eventName === 'push') */ headCommitMessage
-          .split('\n')[0] // First line
-          .replace(/Merge pull request #(\d+)/, `Merge pull request [#$1](https://github.com/${repoName}/pull/$1)`) // Linkify PR number if this is a merge commit
+    const message = (eventName === 'workflow_dispatch' || eventName === 'schedule')
+      ? workflow
+      : (eventName === 'pull_request')
+          ? title
+          // (eventName === 'push')
+          : headCommitMessage
+            .split('\n')[0] // First line
+            .replace(/Merge pull request #(\d+)/, `Merge pull request [#$1](https://github.com/${repoName}/pull/$1)`) // Linkify PR number if this is a merge commit
 
     const fullName = await getFullName(githubUsername)
 
-    const eventMessage = (eventName === 'push') ? `Commit [**${sha.substring(0, 8)}**](https://github.com/${repoName}/commit/${sha}) pushed`
-      : (eventName === 'pull_request') ? `Pull request [**#${pullRequestNumber}**](https://github.com/${repoName}/pull/${pullRequestNumber}) ${action}`
-        : (eventName  === 'workflow_dispatch') ? 'Manually run'
-          : /* (eventName === 'schedule') */ 'Scheduled'
+    const eventMessage = (eventName === 'push')
+      ? `Commit [**${sha.substring(0, 8)}**](https://github.com/${repoName}/commit/${sha}) pushed`
+      : (eventName === 'pull_request')
+          ? `Pull request [**#${pullRequestNumber}**](https://github.com/${repoName}/pull/${pullRequestNumber}) ${action}`
+          : (eventName === 'workflow_dispatch')
+              ? 'Manually run'
+            // (eventName === 'schedule')
+              : 'Scheduled'
 
     // Markdown links, with bolded text
     const workflowLink = `[**${removeAsterisks(workflow)}**](https://github.com/${repoName}/actions?query=workflow%3A"${encodeURIComponent(workflow)}")`
