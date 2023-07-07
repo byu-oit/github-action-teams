@@ -72,8 +72,8 @@ function removeAsterisks (string) {
 async function run () {
   try {
     const { context: { eventName } } = github
-    if (eventName !== 'push' && eventName !== 'pull_request') {
-      setFailed('Events other than `push` and `pull_request` are not supported.')
+    if (!['push', 'pull_request', 'schedule', 'workflow_dispatch'].includes(eventName)) {
+      setFailed('Events other than `push`, `pull_request`, `schedule`, and `workflow_dispatch` are not supported.')
       return
     }
 
@@ -87,9 +87,9 @@ async function run () {
         actor: githubUsername,
         runId,
         runNumber,
+        ref,
         payload: {
           action, // Activity Type from https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request
-          ref,
           head_commit: {
             message: headCommitMessage
           } = {},
@@ -103,21 +103,30 @@ async function run () {
         }
       }
     } = github
-    const branch = (eventName === 'push')
-      ? ref.slice('refs/heads/'.length) // ref = 'refs/heads/main'
-      : github.context.payload.pull_request.head.ref // 'main'
 
-    const message = (eventName === 'push')
-      ? headCommitMessage
-        .split('\n')[0] // First line
-        .replace(/Merge pull request #(\d+)/, `Merge pull request [#$1](https://github.com/${repoName}/pull/$1)`) // Linkify PR number if this is a merge commit
-      : title
+    const branch = (eventName === 'pull_request')
+      ? github.context.payload.pull_request.head.ref // 'main'
+      : ref.slice('refs/heads/'.length) // ref = 'refs/heads/main'
+
+    const message = (eventName === 'workflow_dispatch' || eventName === 'schedule')
+      ? workflow
+      : (eventName === 'pull_request')
+          ? title
+          // (eventName === 'push')
+          : headCommitMessage
+            .split('\n')[0] // First line
+            .replace(/Merge pull request #(\d+)/, `Merge pull request [#$1](https://github.com/${repoName}/pull/$1)`) // Linkify PR number if this is a merge commit
 
     const fullName = await getFullName(githubUsername)
 
     const eventMessage = (eventName === 'push')
       ? `Commit [**${sha.substring(0, 8)}**](https://github.com/${repoName}/commit/${sha}) pushed`
-      : `Pull request [**#${pullRequestNumber}**](https://github.com/${repoName}/pull/${pullRequestNumber}) ${action}`
+      : (eventName === 'pull_request')
+          ? `Pull request [**#${pullRequestNumber}**](https://github.com/${repoName}/pull/${pullRequestNumber}) ${action}`
+          : (eventName === 'workflow_dispatch')
+              ? 'Manually run'
+            // (eventName === 'schedule')
+              : 'Scheduled'
 
     // Markdown links, with bolded text
     const workflowLink = `[**${removeAsterisks(workflow)}**](https://github.com/${repoName}/actions?query=workflow%3A"${encodeURIComponent(workflow)}")`
@@ -149,7 +158,7 @@ async function run () {
                     items: [
                       {
                         type: 'TextBlock',
-                        text: `The ${workflowLink} workflow on the ${branchLink} branch of ${repoLink} ${getStatusText(status)}`,
+                        text: `The ${workflowLink} workflow on ${repoLink}'s ${branchLink} branch ${getStatusText(status)}`,
                         wrap: true
                       }
                     ],

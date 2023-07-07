@@ -6,6 +6,9 @@ on:
   pull_request:
     branches:
       - staging
+  workflow_dispatch:
+  schedule:
+    - cron: '12 0 1 * *' # At noon (UTC) on the first of the month
 
 jobs:
   lint:
