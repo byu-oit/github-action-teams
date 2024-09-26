@@ -10,17 +10,61 @@ on:
   schedule:
     - cron: '12 0 1 * *' # At noon (UTC) on the first of the month
 
+env:
+  node_version: 16
+  FORCE_COLOR: 3
+
 jobs:
+  build: # make sure build/ci work properly
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node_version }}
+          cache: npm
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: npm ci
+        run: npm ci --prefer-offline
+
+      - name: npm run package
+        run: npm run package
+
+      - name: Check for any changed files
+        run: |
+          [[ -z $(git status --untracked-files=no --porcelain) ]] || \
+            (echo "::error title=npm run package::Files in the /dist directory shouldn't have changed. You forgot to run 'npm run package'." && exit 1)
+
+  audit:
+    name: Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node_version }}
+
+      # We don't need to install deps to audit them
+
+      - name: npm audit
+        run: npm audit --audit-level=critical
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: ${{ env.node_version }}
           cache: npm
           cache-dependency-path: '**/package-lock.json'
 
@@ -34,7 +78,7 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Send Teams notification
         uses: ./
         with:
