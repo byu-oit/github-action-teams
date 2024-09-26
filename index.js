@@ -1,15 +1,6 @@
 const { getInput, setFailed, info } = require('@actions/core')
 const github = require('@actions/github')
 
-// Polyfill fetch for Node.js 16
-if (!global.fetch) {
-  const nodeFetch = require('node-fetch')
-  global.fetch = nodeFetch
-  global.Headers = nodeFetch.Headers
-  global.Request = nodeFetch.Request
-  global.Response = nodeFetch.Response
-}
-
 // TODO: Use GitHub's icons (primer/octicons), which will require converting and colorizing the SVGs
 function getImageUrl (status) {
   switch (status) {

@@ -11,7 +11,7 @@ on:
     - cron: '12 0 1 * *' # At noon (UTC) on the first of the month
 
 env:
-  node_version: 16
+  node_version: '20.x'
   FORCE_COLOR: 3
 
 jobs:
