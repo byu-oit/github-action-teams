@@ -8,7 +8,7 @@ A GitHub Action for sending Microsoft Teams notifications
 
 ```yaml
 - name: Teams Notification
-  uses: byu-oit/github-action-teams@v3
+  uses: byu-oit/github-action-teams@v4
   if: always()
   with:
     status: ${{ job.status }}
